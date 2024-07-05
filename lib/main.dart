@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 import 'VideoCallScreen.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
 
   runApp(MyApp());
 }
@@ -15,10 +12,9 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: VideoCallScreen(),
     );
   }
 }
-

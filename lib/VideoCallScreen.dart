@@ -6,45 +6,15 @@ import 'package:jitsivideoccall/NotebookPaper.dart';
 
 import 'SearchScreen.dart';
 
-class VideoCallScreen extends StatefulWidget {
-  const VideoCallScreen({super.key});
-
-  @override
-  State<VideoCallScreen> createState() => _VideoCallScreenState();
-}
-
-class _VideoCallScreenState extends State<VideoCallScreen> {
-  bool? isAudioOnly = true;
-  bool? isAudioMuted = true;
-  bool? isVideoMuted = true;
-
-  @override
-  void initState() {
-    super.initState();
-    JitsiMeet.addListener(JitsiMeetingListener(
-        onConferenceWillJoin: _onConferenceWillJoin,
-        onConferenceJoined: _onConferenceJoined,
-        onConferenceTerminated: _onConferenceTerminated,
-        onError: _onError));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    JitsiMeet.removeAllListeners();
-  }
-
+class VideoCallScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.cyan.shade50,
       body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start  ,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 2,
-            child: Meeting()
-          ),
+          Expanded(flex: 2, child: Meeting()),
           const SizedBox(width: 40),
           Expanded(
             flex: 1,
@@ -80,85 +50,4 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     );
   }
 
-  void _onAudioOnlyChanged(bool? value) {
-    setState(() {
-      isAudioOnly = value;
-    });
-  }
-
-  void _onAudioMutedChanged(bool? value) {
-    setState(() {
-      isAudioMuted = value;
-    });
-  }
-
-  void _onVideoMutedChanged(bool? value) {
-    setState(() {
-      isVideoMuted = value;
-    });
-  }
-
-  Future<void> _joinMeeting() async {
-    Map<FeatureFlagEnum, bool> featureFlags = {
-      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-    };
-
-    var options = JitsiMeetingOptions(room: "myroom")
-      ..serverURL = "serverUrl"
-      ..subject = "myRoom"
-      ..userDisplayName = "myRoom"
-      ..userEmail = "myRoom"
-      ..audioOnly = true
-      ..audioMuted = true
-      ..videoMuted = true
-      ..featureFlags.addAll(featureFlags)
-      ..webOptions = {
-        "roomName": "myroom",
-        "width": "100%",
-        "height": "100%",
-        "enableWelcomePage": false,
-        "chromeExtensionBanner": null,
-        "userInfo": {"displayName": "myRoom"}
-      };
-
-    debugPrint("JitsiMeetingOptions: $options");
-    await JitsiMeet.joinMeeting(
-      options,
-      listener: JitsiMeetingListener(
-        onConferenceWillJoin: (message) {
-          debugPrint("${options.room} will join with message: $message");
-        },
-        onConferenceJoined: (message) {
-          debugPrint("${options.room} joined with message: $message");
-        },
-        onConferenceTerminated: (message) {
-          debugPrint("${options.room} terminated with message: $message");
-        },
-        genericListeners: [
-          JitsiGenericListener(
-            eventName: 'readyToClose',
-            callback: (dynamic message) {
-              debugPrint("readyToClose callback");
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _onConferenceWillJoin(message) {
-    debugPrint("_onConferenceWillJoin broadcasted with message: $message");
-  }
-
-  void _onConferenceJoined(message) {
-    debugPrint("_onConferenceJoined broadcasted with message: $message");
-  }
-
-  void _onConferenceTerminated(message) {
-    debugPrint("_onConferenceTerminated broadcasted with message: $message");
-  }
-
-  void _onError(error) {
-    debugPrint("_onError broadcasted: $error");
-  }
 }
